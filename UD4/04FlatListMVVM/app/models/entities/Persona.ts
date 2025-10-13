@@ -12,15 +12,15 @@ export class Persona {
   }
 
   // Getters
-  public getId(): number {
+  public get Id(): number {
     return this.id;
   }
 
-  public getNombre(): string {
+  public get Nombre(): string {
     return this.nombre;
   }
 
-  public getApellido(): string {
+  public get Apellido(): string {
     return this.apellido;
   }
 
