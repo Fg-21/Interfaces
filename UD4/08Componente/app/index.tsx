@@ -33,8 +33,6 @@ export default function Index() {
         onPress={() => setVisibilidad(true)}>
           <Text style={styles.textStyle}>Mostrar Modal</Text>
       </Pressable>
-      
-
     </View>
   );
 }
