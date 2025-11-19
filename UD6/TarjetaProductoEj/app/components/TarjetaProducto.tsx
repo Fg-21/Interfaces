@@ -22,15 +22,20 @@ export function TarjetaProducto({name, price, imageSrc, onAddtoCart}: TarjetaPro
 
 const styles = StyleSheet.create({
     card:  {
-        color: "grey",
-        borderRadius: 8,
-        flex: 1,
+        backgroundColor: "#FFFF",
         justifyContent: "center",
         alignItems: "center",
+        
+        
+        width: 150,
+        height: 300,
+        margin: 20,
+        padding: 20,
+
+        borderRadius: 8,
         borderColor: "black",
         borderWidth: 2,
-        width: "25%",
-        height: "20%",
+
         shadowColor: "#000",
         shadowOffset: {
 	        width: 0,
@@ -39,13 +44,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
         elevation: 10,
-        margin: 20
     },
     imagen: {
-        width: "90%",
-        height: 100,
+        width: "100%",
+        height: undefined,
+        resizeMode: "contain",
         borderRadius: 8,
-        margin: 10
+        margin: 10,
+        aspectRatio: 1
     },
 
     texto: {

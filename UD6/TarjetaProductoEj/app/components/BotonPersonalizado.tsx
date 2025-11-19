@@ -15,7 +15,7 @@ export function BotonPersonalizado({text, onClick}: BotonPersonalizado){
 
 const styles = StyleSheet.create({
     boton: {
-        backgroundColor: "#34D9D6",
+        backgroundColor: "#349ad9ff",
         borderRadius: 8,
         width: "90%",
         justifyContent: "center",
