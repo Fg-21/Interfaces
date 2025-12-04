@@ -1,12 +1,11 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { Stack } from "expo-router";
-import {Drawer} from "expo-router/drawer";
+import { Drawer } from "expo-router/drawer";
 
 export default function RootLayout() {
   return (
     <Drawer>
         <Drawer.Screen 
-            name="home/" 
+            name="(home)" 
             options={{
                 drawerLabel: "Home", 
                 title: "Home",
