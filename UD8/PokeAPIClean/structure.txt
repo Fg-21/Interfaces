@@ -1,0 +1,40 @@
+src/
+	
+	
+	app/
+	Index.tsx
+		*Vista con un boton para mostrar las tarjetas de los pokemons, la tarjeta será un recuadrito con el nombre del pokemon*
+
+	Presentation/
+		PokemonsViewModel.ts
+			*Se le inyecta el PokemonsUseCase*
+	Domain/
+		Interfaces/
+			public interface IPokemonsUseCase.ts
+				+ Promise<List<Pokemon>> getPokemons();
+
+			public interface IRepoPokemons.ts
+				+ Promise<List<Pokemon>> getPokemons();
+		Entities/
+			public Pokémon
+				- string nombre *Con get*
+		UseCases/
+			PokemonsUseCase : IPokemonsUseCase
+				*Se le inyecta el RepoPokemons*
+				+ Promise<List<Pokemon>> getPokemons()	 
+		
+	Data/
+		API/
+			public static apiConnection
+				+ string getApiConnectionStringBase()
+				
+		Repos/
+			public RepoPokemons : IRepoPokemons
+				- string uri = pokemon?limit=20%5C&offset=0
+			+ Promise<List<Pokemon>> getPokemons()
+				*Llama a la API y cambia la cadena de conexión a la siguiente(next)
+			
+	Core/	
+		Container.ts
+		Types.ts		
+		
