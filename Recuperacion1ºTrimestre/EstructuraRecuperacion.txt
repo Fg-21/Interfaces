@@ -1,0 +1,102 @@
+src/
+	APP/
+		layout.tsx
+		index.tsx
+
+		Models/
+			PersonaTrimmed&ListaDepartamentosDto&Color.ts
+				public class PersonaTrimmed&ListaDepartamentosDto&Color
+					- int idPersona
+					- string nombrePersona
+					- string apellidosPersona
+					- int idDepartamento
+					- Departamento[] listaDepartamentos
+					- String color
+					*Todo solo con get*
+					+ PersonaTrimmed&ListaDepartamentosDto&Color(int idPersona, string nombrePersona, string apellidosPersona, int idDepartamento, Departamento[] listaDepartamentos, string color)	
+				
+		VM/
+			PDGameVM.ts
+				public class MainGameVM
+					*Se le inyecta el caso de uso*
+					+ boolean isLoading = false
+					+ PersonaTrimmed&ListaDepartamentosDto&Color[] dataCompleted = []
+					+ String error = null
+					+ int aciertos = 0
+					+ int registros = 0
+					+ boolean allRegistersGuessed = false
+
+					+ async Promise<void> loadList()
+
+					+ void checkRegisters()
+		Mappers/
+			PersonaTrimmed&ListaDepartamentosDtoToPersonaTrimmed&ListaDepartamentosDto&ColorMapper.ts
+				public class PersonaTrimmed&ListaDepartamentosDtoToPersonaTrimmed&ListaDepartamentosDto&ColorMapper
+					- static readonly Record<string, string> MAPEO_COLORES
+					+ static PersonaTrimmed&ListaDepartamentosDto&Color execute(PersonaTrimmed&ListaDepartamentosDto pDto)
+	
+	CORE/
+		container.ts
+		types.ts
+	DATA/
+		API/
+			ApiString.ts
+				public static class ApiString
+					+ string getAPIBase()
+		Repos/
+			RepoPersonas.ts
+				public class RepoPersonas : IRepoPersonas
+					+ Promise<Persona[]> getAllPersonas()
+			RepoDepartamentos.ts
+				public class RepoDepartamentos : IRepoDepartamentos
+					+ Promise<Departamento[]> getAllDepartamentos()
+	DOMAIN/
+		Entities/
+			Persona.ts
+				- int id
+				- string nombre
+				- string apellidos
+				- long telefono
+				- string direccion
+				- string foto
+				- Date fecha
+				- int idDepartamento
+				*Todo solo con get*
+				
+				+ Persona(int id, string nombre, string apellidos, long telefono, string direccion, string foto, Date fecha, int idDepartamento)
+			
+			Departamento.ts
+				- int id
+				- string nombre
+				*Todo solo con get*
+				+ Departamento(int id, string nombre)
+
+		Dto/
+			PersonaTrimmed&ListaDepartamentosDto.ts
+				- int idPersona
+				- string nombrePersona
+				- string apellidosPersona
+				- int idDepartamento
+				- Departamento[] listaDepartamentos
+				*Todo solo con get*
+				+ PersonaTrimmed&ListaDepartamentosDto(int idPersona, string nombrePersona, string apellidosPersona, int idDepartamento, Departamento[] listaDepartamentos)
+		
+		UseCases/
+			PersonaDepartamentoUseCase.ts
+				*Se le inyectan los dos repos*
+				public class PersonaDepartamentoUseCase : IPersonaDepartamentoUseCase
+					+ Promise<PersonaTrimmed&ListaDepartamentosDto[]> getListaPersonaTrimmed&ListaDepartamentosDto()
+
+		Interfaces/
+			IRepoPersonas.ts
+				public interface IRepoPersonas
+					+ Promise<Persona[]> getAllPersonas();
+
+			IRepoDepartamentos.ts
+				public interface IRepoDepartamentos
+					 + Promise<Departamento[]> getAllDepartamentos();
+
+			IPersonaDepartamentoUseCase.ts
+				public interface IPersonaDepartamentoUseCase
+					+ Promise<PersonaTrimmed&ListaDepartamentosDto[]> getListaPersonaTrimmed&ListaDepartamentosDto();
+				
