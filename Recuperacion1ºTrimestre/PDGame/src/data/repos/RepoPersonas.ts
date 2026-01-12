@@ -13,7 +13,7 @@ export default class RepoPersonas implements IRepoPersonas {
         const APIBase = ApiString.getAPIBase();
 
         try {
-            const response = await fetch(APIBase + "Personas", { method: "GET", headers: { "Accept": "application/json" } });
+            const response = await fetch(APIBase + "PersonasApi", { method: "GET", headers: { "Accept": "application/json" } });
             if (!response.ok) {
                 throw new Error(`Fallo en API ${response.status}, ${response.statusText}`)
             };

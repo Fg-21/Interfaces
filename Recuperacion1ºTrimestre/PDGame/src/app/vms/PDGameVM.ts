@@ -4,7 +4,9 @@ import { TYPES } from "@/src/core/types";
 import IPersonaDepartamentoUseCase from "@/src/domain/interfaces/IPersonaDepartamentoUseCase";
 import PersonaTrimmedYListaDepartamentosDto from "@/src/domain/dtos/PersonaTrimmedYListaDepartamentosDto";
 import PersonaTrimmedYListaDepartamentosDtoYColorMapper from "../mappers/PersonaTrimmed&ListaDepartamentosDtoToPersonaTrimmed&ListaDepartamentosDto&ColorMapper";
+import { injectable } from "inversify";
 
+@injectable()
 export default class PDGameVM{
     public isLoading: boolean = false;
     public dataCompleted: PersonaTrimmedYListaDepartamentosDtoYColor[] = []
@@ -55,9 +57,7 @@ export default class PDGameVM{
     /**
      * Metodo para chequear que el usuario ha acertado todos los registros y cambiar su booleano correspondiente a true si es así
      */
-    public checkRegisters() : void{
-        if (this.aciertos = this.registros){
-            this.allRegistersGuessed = true;
-        }
+    public checkRegisters(): void {
+    this.allRegistersGuessed = (this.aciertos === this.registros);
     }
 }

@@ -6,11 +6,11 @@ export default class PersonaTrimmedYListaDepartamentosDtoYColorMapper {
      * Record para asignar cada id de departamento a un color
      */
     private static readonly MAPEO_COLORES: Record<number, string> = {
-    1: "red",
-    2: "blue",
-    3: "green",
-    4: "orange",
-    0: "gray"
+    1: "#FF2900",
+    2: "#0022FF",
+    3: "#21CC00",
+    4: "#FF8A00",
+    0: "#878787"
   };
 
   /**

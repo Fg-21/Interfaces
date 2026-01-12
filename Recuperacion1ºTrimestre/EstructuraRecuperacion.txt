@@ -11,10 +11,12 @@ src/
 					- string apellidosPersona
 					- int idDepartamento
 					- Departamento[] listaDepartamentos
+					- number departamentoSelected
 					- String color
 					*Todo solo con get*
-					+ PersonaTrimmed&ListaDepartamentosDto&Color(int idPersona, string nombrePersona, string apellidosPersona, int idDepartamento, Departamento[] listaDepartamentos, string color)	
+					+ PersonaTrimmed&ListaDepartamentosDto&Color(int idPersona, string nombrePersona, string apellidosPersona, int idDepartamento, Departamento[] listaDepartamentos, number departamentoSelected, string color)	
 				
+					+ Boolean checkSelectedDepartamento()
 		VM/
 			PDGameVM.ts
 				public class MainGameVM

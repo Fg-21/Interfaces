@@ -13,7 +13,7 @@ export default class RepoDepartamentos implements IRepoDepartamentos{
         const APIBase = ApiString.getAPIBase();
         
         try{
-            const response = await fetch(APIBase + "Departamentos", {method: "GET", headers: {"Accept": "application/json"}});
+            const response = await fetch(APIBase + "DepartamentoApi", {method: "GET", headers: {"Accept": "application/json"}});
             if (!response.ok){
                 throw new Error(`Fallo en API ${response.status}, ${response.statusText}`)
             };

@@ -1,5 +1,5 @@
 export default class ApiString{
     public static getAPIBase(): string{
-        return "primerainstanciafran-e8hee7ffhhg6bpgj.italynorth-01.azurewebsites.net/"
+        return "https://ui20251201140330-ahdqhwe3c6cxcrfk.italynorth-01.azurewebsites.net/API/"
     }
 }
