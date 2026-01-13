@@ -1,0 +1,146 @@
+src/
+	ui/
+		models/
+		vms/
+			PersonasVM.ts
+				public class PersonasVM
+					/*Se le inyectan los dos casos de uso*/
+					- isLoading : boolean | undefined //get y set
+					- personaSelected : Persona | undefined //get y set
+					- listaPersonas : Persona[] | undefined //get
+					- listaDepa : Departamento[] | undefined //get
+
+					+ aysnc getPersonas(): Promise<Persona[]>;
+					+ async getPersonaById(id: number): Promise<Persona>;
+					+ async getPersonaWithListaDepaById(id: number): Promise<PersonaWithListaDepaDto>
+					+ async createPersona(p: Persona): Promise<number>;
+					+ async editPersona(id: number, p: Persona) Promise<number>;
+					+ async deletePersona(id: number): Promise<number>;
+
+			DepartamentosVM.ts
+				public class DepartamentosVM
+					/*Se le inyecta el caso de uso de departamento*/
+					- isLoading : boolean | undefined //get y set
+					- depaSelected : Departamento | undefined //get y set
+					- listaDepa : Departamento[] | undefined //get
+
+					+ aysnc getDepartamentos(): Promise<Departamento[]>
+					+ async getDepartamentoById(id: number): Promise<Departamento>
+					+ async createDepartamento(d: Departameno): Promise<number>
+					+ async editDepartamento(id: number, d: Departamento) Promise<number>
+					+ async deleteDepartamento(id: number): Promise<number>
+	app/
+		(drawer)/
+			_layout.tsx
+			personas.tsx
+			departamentos.tsx
+	
+	core/
+			types.ts
+			cointainer.ts
+	domain/
+			dtos/
+				PersonaWithListaDepaDto.ts
+					- id: number;
+  					- nombre: string;
+  					- apellidos: string;
+  					- telefono: string;
+  					- direccion: string;
+  					- foto: string;
+  					- fecha: string;
+  					- idDepartamento: number;
+					- listaDepa: Departamento[]
+					/*Todo con get*/
+										
+			entities/
+				Persona.ts
+					- id: number;
+  					- nombre: string;
+  					- apellidos: string;
+  					- telefono: string;
+  					- direccion: string;
+  					- foto: string;
+  					- fecha: string;
+  					- idDepartamento: number;
+					/*Todo con get*/	
+
+				Departamento.ts
+					- id: number;
+					- nombre: string;
+					/*Todo con get*/
+
+				
+			interfaces/
+				IRepoPersonas.ts
+					public interface IRepoPersonas
+						+ aysnc getPersonas(): Promise<Persona[]>;
+						+ async getPersonaById(id: number): Promise<Persona>;
+						+ async createOrEditPersona(p: Persona): Promise<number>;
+						+ async deletePersona(id: number): Promise<number>;
+
+
+				IRepoDepartamentos.ts
+					public interface IRepoDepartamentos
+						+ aysnc getDepartamentos(): Promise<Departamento[]>;
+						+ async getDepartamentoById(id: number): Promise<Departamento>;
+						+ async createOrEditDepartamento(d: Departameno): Promise<number>;
+						+ async deleteDepartamento(id: number): Promise<number>;
+				
+				IPersonasUseCase.ts
+					public interface IPersonasUseCase
+						+ aysnc getPersonas(): Promise<Persona[]>;
+						+ async getPersonaById(id: number): Promise<Persona>;
+						+ async getPersonaWithListaDepaById(id: number): Promise<PersonaWithListaDepaDto>
+						+ async createOrEditPersona(p: Persona): Promise<number>;
+						+ async deletePersona(id: number): Promise<number>;
+						- checkFechaTo18() : boolean;
+						- checkFechaToSundays() : boolean;
+				
+				IDepartamentosUseCase.ts
+					public interface IDepartamentosUseCase
+						+ aysnc getDepartamentos(): Promise<Departamento[]>;
+						+ async getDepartamentoById(id: number): Promise<Departamento>;
+						+ async createOrEditDepartamento(d: Departameno): Promise<number>;
+						+ async deleteDepartamento(id: number): Promise<number>;
+
+			usecases/
+				PersonasUseCase.ts
+					public class PersonasUseCase implements IPersonasUseCase
+						/*Se le inyecta el repo de Personas*/
+						+ aysnc getPersonas(): Promise<Persona[]>;
+						+ async getPersonaById(id: number): Promise<Persona>;
+						+ async getPersonaWithListaDepaById(id: number): Promise<PersonaWithListaDepaDto>
+						+ async createOrEditPersona(p: Persona): Promise<number>;
+						+ async deletePersona(id: number): Promise<number>;
+						- checkFechaTo18() : boolean;
+						- checkFechaToSundays() : boolean;
+					
+				DepartamentosUseCase.ts
+					public class DepartamentosUseCase implements IDepartamentosUseCase
+						/*Se le inyecta el repo de Departamentos*/
+						+ aysnc getDepartamentos(): Promise<Departamento[]>
+						+ async getDepartamentoById(id: number): Promise<Departamento>
+						+ async createOrEditDepartamento(d: Departameno): Promise<number>
+						+ async deleteDepartamento(id: number): Promise<number>	
+
+	data/
+			repos/
+				RepoPersonas.ts
+					public class RepoPersonas implements IRepoPersonas
+						+ aysnc getPersonas(): Promise<Persona[]>
+						+ async getPersonaById(id: number): Promise<Persona>
+						+ async createOrEditPersona(p: Persona): Promise<number>
+						+ async deletePersona(id: number): Promise<number>
+
+				RepoDepartamentos.ts
+					public class RepoDepartamentos implements IRepoDepartamentos
+						+ aysnc getDepartamentos(): Promise<Departamento[]>
+						+ async getDepartamentoById(id: number): Promise<Departamento>
+						+ async createOrEditDepartamento(d: Departameno): Promise<number>
+						+ async deleteDepartamento(id: number): Promise<number>
+			api/
+				APIConnection.ts
+					public class APIConnection
+						+ static getAPIBase(): string
+		
+		
