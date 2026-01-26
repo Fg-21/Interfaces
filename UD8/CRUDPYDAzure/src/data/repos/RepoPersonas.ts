@@ -1,18 +1,130 @@
 import { Persona } from "@/src/domain/entities/Persona";
 import { IRepoPersonas } from "@/src/domain/interfaces/IRepoPersonas";
+import { injectable } from "inversify";
+import APIConnection from "../api/APIConnection";
 
-export default class RepoPersonas implements IRepoPersonas{
-    getPersonas(): Promise<Persona[]> {
-        throw new Error("Method not implemented.");
+
+
+@injectable()
+export default class RepoPersonas implements IRepoPersonas {
+    private _apiBase: string;
+
+    constructor(apiBase: string) {
+        this._apiBase = APIConnection.getAPIBase() + "PersonasApi";
     }
-    getPersonaById(id: number): Promise<Persona> {
-        throw new Error("Method not implemented.");
+
+    async getPersonas(): Promise<Persona[]> {
+        try {
+            const response = await fetch(`${this._apiBase}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.map((item: any) => new Persona(
+                item.id,
+                item.nombre,
+                item.apellidos,
+                item.telefono,
+                item.direccion,
+                item.foto,
+                item.fecha,
+                item.idDepartamento
+            ));
+        } catch (error) {
+            console.error("Error getting personas:", error);
+            throw error;
+        }
     }
-    createOrEditPersona(p: Persona): Promise<number> {
-        throw new Error("Method not implemented.");
+
+    async getPersonaById(id: number): Promise<Persona> {
+        try {
+            const response = await fetch(`${this._apiBase}/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return new Persona(
+                data.id,
+                data.nombre,
+                data.apellidos,
+                data.telefono,
+                data.direccion,
+                data.foto,
+                data.fecha,
+                data.idDepartamento
+            );
+        } catch (error) {
+            console.error("Error getting persona by id:", error);
+            throw error;
+        }
     }
-    deletePersona(id: number): Promise<number> {
-        throw new Error("Method not implemented.");
+
+    async createOrEditPersona(p: Persona): Promise<number> {
+        try {
+            const isEdit = p.id > 0;
+            const url = isEdit ? `${this._apiBase}/${p.id}` : this._apiBase;
+            const method = isEdit ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: p.id,
+                    nombre: p.nombre,
+                    apellidos: p.apellidos,
+                    telefono: p.telefono,
+                    direccion: p.direccion,
+                    foto: p.foto,
+                    fecha: p.fecha,
+                    idDepartamento: p.idDepartamento
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.id || data;
+        } catch (error) {
+            console.error("Error creating/editing persona:", error);
+            throw error;
+        }
     }
-    
+
+    async deletePersona(id: number): Promise<number> {
+        try {
+            const response = await fetch(`${this._apiBase}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            return id;
+        } catch (error) {
+            console.error("Error deleting persona:", error);
+            throw error;
+        }
+    }
 }
