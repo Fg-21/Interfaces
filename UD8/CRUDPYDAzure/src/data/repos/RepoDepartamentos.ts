@@ -7,7 +7,7 @@ import APIConnection from "../api/APIConnection";
 
 @injectable()
 export default class RepoDepartamentos implements IRepoDepartamentos {
-    private _apiBase: string = APIConnection.getAPIBase()
+    private _apiBase: string = APIConnection.getAPIBase() + "/DepartamentoApi" 
 
     async getDepartamentos(): Promise<Departamento[]> {
         try {

@@ -9,7 +9,7 @@ import APIConnection from "../api/APIConnection";
 export default class RepoPersonas implements IRepoPersonas {
     private _apiBase: string;
 
-    constructor(apiBase: string) {
+    constructor() {
         this._apiBase = APIConnection.getAPIBase() + "PersonasApi";
     }
 
