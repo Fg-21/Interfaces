@@ -1,0 +1,51 @@
+
+
+services/
+	connectionService.ts
+		public class connectionService implements IconnectionService
+			+ send(clsMensajeUsuario): Promise<void>
+			+ startConnection():Promise<signalR.HubConnection>
+	azure/
+		AzureBase.ts
+			public class AzureBase
+				+ getURLBase(): string
+			
+domain/
+	entities/
+		clsMensajeUsuario.ts
+			- nombre: string
+			- mensaje: string
+			*get y set*
+	usecases/
+		mensajeUsuarioUseCase.ts
+			public mensajeUsuarioUseCase implements ImensajeUsuarioUseCase
+				*Se le inyectan el servicio de connexion*
+				+ send(clsMensajeUsuario): Promise<void>
+				+ startConnection():Promise<signalR.HubConnection>
+	interfaces/
+		ImensajeUsuarioUseCase.ts
+			public interface ImensajeUsuarioUseCase
+				+ send(clsMensajeUsuario): Promise<void>;
+				+ startConnection(): Promise<signalR.HubConnection>;
+
+		IconnectionService.ts
+			public interface IconnectionService
+				+ send(clsMensajeUsuario): Promise<void>;
+				+ startConnection(): Promise<signalR.HubConnection>;
+			
+ui/
+	vm/
+		chatVM.ts
+			*Se le inyecta el caso de uso*
+			- connection: signalR.HubConnection			
+			+ message: clsMensajeUsuario
+			+ listaMsg: clsMensajeUsuario[]
+			+ isLoading: bool
+
+			+ send(clsMensajeUsuario): Promise<void>
+			+ startConnection(): Promise<signalR.HubConnection>
+		
+app/
+	index.tsx
+	layout.tsx
+		
