@@ -18,7 +18,33 @@ export default class PersonasUseCase implements IPersonasUseCase {
         this._repoDepartamentos = repoDepartamentos;
     }
     checkFechaTo18(fecha: string): boolean {
-        throw new Error("Method not implemented.");
+        try {
+            // Convertir la fecha de nacimiento a objeto Date
+            const fechaNacimiento = new Date(fecha);
+
+            // Verificar que la fecha sea válida
+            if (isNaN(fechaNacimiento.getTime())) {
+                return false;
+            }
+
+            // Obtener la fecha actual
+            const fechaActual = new Date();
+
+            // Calcular la edad
+            let edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+            const mes = fechaActual.getMonth() - fechaNacimiento.getMonth();
+
+            // Ajustar si aún no ha cumplido años este año
+            if (mes < 0 || (mes === 0 && fechaActual.getDate() < fechaNacimiento.getDate())) {
+                edad--;
+            }
+
+            // Retornar true si tiene 18 años o más
+            return edad >= 18;
+        } catch (error) {
+            console.error("Error checking fecha 18:", error);
+            return false;
+        }
     }
 
     async getPersonas(): Promise<Persona[]> {
@@ -33,7 +59,7 @@ export default class PersonasUseCase implements IPersonasUseCase {
         try {
             // Obtener la persona por id
             const persona = await this._repoPersonas.getPersonaById(id);
-            
+
             // Obtener todos los departamentos
             const listaDepartamentos = await this._repoDepartamentos.getDepartamentos();
 
@@ -41,11 +67,11 @@ export default class PersonasUseCase implements IPersonasUseCase {
             return new PersonaWithListaDepaDto(
                 persona.id,
                 persona.nombre,
-                persona.apellidos,
+                persona.apellido,
                 persona.telefono,
                 persona.direccion,
-                persona.foto,
-                persona.fecha,
+                persona.imagen,
+                persona.fechaNac,
                 persona.idDepartamento,
                 listaDepartamentos
             );
@@ -67,19 +93,19 @@ export default class PersonasUseCase implements IPersonasUseCase {
         try {
             //convertir la fecha de nacimiento a objeto Date
             const fechaNacimiento = new Date(fecha);
-            
+
             // Obtener la fecha actual
             const fechaActual = new Date();
-            
+
             // Calcular la edad
             let edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
             const mes = fechaActual.getMonth() - fechaNacimiento.getMonth();
-            
+
             // Ajustar si aún no ha cumplido años este año
             if (mes < 0 || (mes === 0 && fechaActual.getDate() < fechaNacimiento.getDate())) {
                 edad--;
             }
-            
+
             //true si tiene 18 años o más
             return edad >= 18;
         } catch (error) {
@@ -92,10 +118,10 @@ export default class PersonasUseCase implements IPersonasUseCase {
         try {
             // Convertir la fecha a objeto Date
             const date = new Date(fecha);
-            
+
             //día de la semana
             const diaSemana = date.getDay();
-            
+
             // Retornar true si es domingo (0)
             return diaSemana === 0;
         } catch (error) {

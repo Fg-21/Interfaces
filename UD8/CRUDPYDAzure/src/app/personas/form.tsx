@@ -1,21 +1,18 @@
 import { Departamento } from '@/src/domain/entities/Departamento';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
     ActivityIndicator,
-    Alert,
-    Platform,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import container from '../../core/Container';
@@ -33,7 +30,6 @@ const PersonasFormScreen = observer(() => {
     const viewModel = container.get<PersonasVM>('PersonasVM');
     const navigation = useNavigation<PersonasFormNavigationProp>();
     const route = useRoute<PersonasFormRouteProp>();
-    const [showDatePicker, setShowDatePicker] = useState(false);
 
     const personaId = route.params?.personaId;
     const isEditMode = personaId !== undefined;
@@ -49,32 +45,17 @@ const PersonasFormScreen = observer(() => {
     const handleSave = async () => {
         const success = await viewModel.savePersona();
         if (success) {
-            Alert.alert(
-                'Éxito',
-                isEditMode ? 'Persona actualizada correctamente' : 'Persona creada correctamente',
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => navigation.goBack(),
-                    },
-                ]
-            );
+            navigation.goBack()
         }
     };
 
-    const handleDateChange = (event: any, selectedDate?: Date) => {
-        setShowDatePicker(Platform.OS === 'ios');
-        if (selectedDate) {
-            const dateString = selectedDate.toISOString().split('T')[0];
-            viewModel.setFormFecha(dateString);
-        }
-    };
-
-    if (viewModel.isLoading && viewModel.personaWithDepa === null && isEditMode) {
+    if (viewModel.isLoading && viewModel.personaWithDepa === null) {
         return (
             <View style={styles.centerContainer}>
                 <ActivityIndicator size="large" color="#03dac6" />
-                <Text style={styles.loadingText}>Cargando información...</Text>
+                <Text style={styles.loadingText}>
+                    {isEditMode ? 'Cargando persona...' : 'Cargando departamentos...'}
+                </Text>
             </View>
         );
     }
@@ -160,6 +141,9 @@ const PersonasFormScreen = observer(() => {
                             </Text>
                         )}
                     </View>
+                    <Text style={styles.helperText}>
+                            Tiene que ser un telefono español valido (Empezar por 6 o 7): ejemplo 654987321 o 789465132
+                        </Text>
 
                     {/* Dirección */}
                     <View style={styles.inputGroup}>
@@ -200,30 +184,30 @@ const PersonasFormScreen = observer(() => {
                     {/* Fecha de Nacimiento */}
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>Fecha de Nacimiento *</Text>
-                        {Platform.OS === 'web' ? (
+                        <View style={styles.dateInputContainer}>
+                            <Icon name="calendar-today" size={20} color="#666" style={styles.dateIcon} />
                             <TextInput
-                                style={[styles.dateButton, viewModel.formErrors.fecha && styles.inputError]}
-                                {...({type : 'date'} as any)}
+                                style={[
+                                    styles.dateInput,
+                                    viewModel.formErrors.fecha && styles.inputError,
+                                ]}
+                                placeholder="YYYY-MM-DD (ej: 2000-01-15)"
                                 value={viewModel.formFecha}
-                                onChange={(e: any) => viewModel.setFormFecha(e.target.value)}
+                                onChangeText={(text) => viewModel.setFormFecha(text)}
+                                editable={!viewModel.isLoading}
+                                keyboardType="numbers-and-punctuation"
+                                maxLength={30}
                             />
-                        ) : (
-                            <TouchableOpacity
-                                style={[styles.dateButton, viewModel.formErrors.fecha && styles.inputError]}
-                                onPress={() => setShowDatePicker(true)}
-                            >
-                                <Text style={[styles.dateButtonText, !viewModel.formFecha && styles.placeholderText]}>
-                                    {viewModel.formFecha || 'Seleccionar fecha'}
-                                </Text>
-                                <Icon name="calendar-today" size={20} color="#666" />
-                            </TouchableOpacity>
-                        )}
+                        </View>
+                        <Text style={styles.helperText}>
+                            Formato: Año-Mes-Día (YYYY-MM-DD)
+                        </Text>
                         {viewModel.formErrors.fecha && (
                             <Text style={styles.errorFieldText}>
                                 {viewModel.formErrors.fecha}
                             </Text>
                         )}
-                        {viewModel.formFecha && (
+                        {viewModel.formFecha && !viewModel.formErrors.fecha && (
                             <View style={styles.dateInfo}>
                                 {viewModel.isMayorDeEdad() ? (
                                     <View style={styles.infoRow}>
@@ -245,16 +229,6 @@ const PersonasFormScreen = observer(() => {
                             </View>
                         )}
                     </View>
-
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={viewModel.formFecha ? new Date(viewModel.formFecha) : new Date()}
-                            mode="date"
-                            display="default"
-                            onChange={handleDateChange}
-                            maximumDate={new Date()}
-                        />
-                    )}
 
                     {/* Departamento */}
                     <View style={styles.inputGroup}>
@@ -405,22 +379,30 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 4,
     },
-    dateButton: {
+    dateInputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
         borderWidth: 1,
         borderColor: '#ddd',
         borderRadius: 8,
-        padding: 12,
         backgroundColor: '#fff',
+        paddingLeft: 12,
     },
-    dateButtonText: {
+    dateIcon: {
+        marginRight: 8,
+    },
+    dateInput: {
+        flex: 1,
+        padding: 12,
+        paddingLeft: 0,
         fontSize: 16,
-        color: '#333',
+        borderWidth: 0,
     },
-    placeholderText: {
+    helperText: {
+        fontSize: 12,
         color: '#999',
+        marginTop: 4,
+        fontStyle: 'italic',
     },
     dateInfo: {
         marginTop: 8,

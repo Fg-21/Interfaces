@@ -1,30 +1,30 @@
 export class Persona {
     private _id: number;
     private _nombre: string;
-    private _apellidos: string;
+    private _apellido: string;
     private _telefono: string;
     private _direccion: string;
-    private _foto: string;
-    private _fecha: string;
+    private _imagen: string;
+    private _fechaNac: string;
     private _idDepartamento: number;
 
     constructor(
         id: number,
         nombre: string,
-        apellidos: string,
+        apellido: string,
         telefono: string,
         direccion: string,
-        foto: string,
-        fecha: string,
+        imagen: string,
+        fechaNac: string,
         idDepartamento: number
     ) {
         this._id = id;
         this._nombre = nombre;
-        this._apellidos = apellidos;
+        this._apellido = apellido;
         this._telefono = telefono;
         this._direccion = direccion;
-        this._foto = foto;
-        this._fecha = fecha;
+        this._imagen = imagen;
+        this._fechaNac = fechaNac;
         this._idDepartamento = idDepartamento;
     }
 
@@ -36,8 +36,8 @@ export class Persona {
         return this._nombre;
     }
 
-    public get apellidos(): string {
-        return this._apellidos;
+    public get apellido(): string {
+        return this._apellido;
     }
 
     public get telefono(): string {
@@ -48,12 +48,12 @@ export class Persona {
         return this._direccion;
     }
 
-    public get foto(): string {
-        return this._foto;
+    public get imagen(): string {
+        return this._imagen;
     }
 
-    public get fecha(): string {
-        return this._fecha;
+    public get fechaNac(): string {
+        return this._fechaNac;
     }
 
     public get idDepartamento(): number {

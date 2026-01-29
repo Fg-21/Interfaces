@@ -27,14 +27,24 @@ export default class RepoPersonas implements IRepoPersonas {
             }
 
             const data = await response.json();
+            console.log(data.map((item: any) => new Persona(
+                item.id,
+                item.nombre,
+                item.apellido,
+                item.telefono,
+                item.direccion,
+                item.imagen,
+                item.fechaNac,
+                item.idDepartamento
+            )))
             return data.map((item: any) => new Persona(
                 item.id,
                 item.nombre,
-                item.apellidos,
+                item.apellido,
                 item.telefono,
                 item.direccion,
-                item.foto,
-                item.fecha,
+                item.imagen,
+                item.fechaNac,
                 item.idDepartamento
             ));
         } catch (error) {
@@ -60,11 +70,11 @@ export default class RepoPersonas implements IRepoPersonas {
             return new Persona(
                 data.id,
                 data.nombre,
-                data.apellidos,
+                data.apellido,
                 data.telefono,
                 data.direccion,
-                data.foto,
-                data.fecha,
+                data.imagen,
+                data.fechaNac,
                 data.idDepartamento
             );
         } catch (error) {
@@ -87,11 +97,11 @@ export default class RepoPersonas implements IRepoPersonas {
                 body: JSON.stringify({
                     id: p.id,
                     nombre: p.nombre,
-                    apellidos: p.apellidos,
+                    apellido: p.apellido,
                     telefono: p.telefono,
                     direccion: p.direccion,
-                    foto: p.foto,
-                    fecha: p.fecha,
+                    imagen: p.imagen,
+                    fechaNac: p.fechaNac,
                     idDepartamento: p.idDepartamento
                 }),
             });

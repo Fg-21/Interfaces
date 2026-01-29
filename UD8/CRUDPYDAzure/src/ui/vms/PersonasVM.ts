@@ -11,6 +11,8 @@ export default class PersonasVM {
 
     // Observables - Lista
     personas: Persona[] = [];
+    personasFiltradas: Persona[] = [];
+    searchQuery: string = "";
     isLoading: boolean = false;
     error: string | null = null;
 
@@ -43,8 +45,6 @@ export default class PersonasVM {
         makeAutoObservable(this);
     }
 
-    // ==================== LISTA DE PERSONAS ====================
-
     // Cargar todas las personas
     async loadPersonas(): Promise<void> {
         this.isLoading = true;
@@ -55,8 +55,10 @@ export default class PersonasVM {
             
             runInAction(() => {
                 this.personas = result;
+                this.filterPersonas();
                 this.isLoading = false;
             });
+            console.log("VM:" + result);
         } catch (error) {
             runInAction(() => {
                 this.error = error instanceof Error ? error.message : "Error al cargar personas";
@@ -64,18 +66,74 @@ export default class PersonasVM {
             });
             console.error("Error loading personas:", error);
         }
+        
     }
 
-    // ==================== NAVEGACIÓN ====================
+    // Establecer consulta de búsqueda
+    setSearchQuery(query: string): void {
+        this.searchQuery = query;
+        this.filterPersonas();
+    }
+
+    // Filtrar personas según la búsqueda
+    private filterPersonas(): void {
+        if (!this.searchQuery.trim()) {
+            this.personasFiltradas = this.personas;
+        } else {
+            const queryLower = this.searchQuery.toLowerCase().trim();
+            this.personasFiltradas = this.personas.filter((persona) => {
+                const nombreCompleto = `${persona.nombre} ${persona.apellido}`.toLowerCase();
+                return nombreCompleto.includes(queryLower) ||
+                       persona.nombre.toLowerCase().includes(queryLower) ||
+                       persona.apellido.toLowerCase().includes(queryLower);
+            });
+        }
+    }
+
+    // Limpiar búsqueda
+    clearSearch(): void {
+        this.searchQuery = "";
+        this.filterPersonas();
+    }
+
 
     // Navegar a crear nueva persona
-    navigateToCreate(): void {
+    async navigateToCreate(): Promise<void> {
         this.isEditMode = false;
-        this.resetForm();
+        this.isLoading = true;
+        this.error = null;
+
+        try {
+            const personas = await this._personasUseCase.getPersonas();
+            
+            if (personas.length > 0) {
+                const dtoConDepartamentos = await this._personasUseCase.getPersonaWithListaDepaById(personas[0].id);
+                
+                runInAction(() => {
+                    this.personaWithDepa = dtoConDepartamentos;
+                    this.resetForm();
+                    this.isLoading = false;
+                });
+            } else {
+                runInAction(() => {
+                    this.personaWithDepa = null;
+                    this.resetForm();
+                    this.isLoading = false;
+                    this.error = "No hay departamentos disponibles. Cree un departamento primero.";
+                });
+            }
+        } catch (error) {
+            runInAction(() => {
+                this.error = error instanceof Error ? error.message : "Error al cargar departamentos";
+                this.isLoading = false;
+            });
+            console.error("Error loading departamentos for create:", error);
+        }
     }
 
     // Navegar a editar persona existente
     async navigateToEdit(personaId: number): Promise<void> {
+        this.isEditMode = true;
         this.isLoading = true;
         this.error = null;
 
@@ -83,7 +141,6 @@ export default class PersonasVM {
             const result = await this._personasUseCase.getPersonaWithListaDepaById(personaId);
             
             runInAction(() => {
-                this.isEditMode = true;
                 this.personaWithDepa = result;
                 this.populateForm(result);
                 this.isLoading = false;
@@ -97,7 +154,6 @@ export default class PersonasVM {
         }
     }
 
-    // ==================== FORMULARIO ====================
 
     // Poblar formulario con datos de persona existente
     private populateForm(personaDto: PersonaWithListaDepaDto): void {
@@ -109,9 +165,10 @@ export default class PersonasVM {
         this.formFoto = personaDto.foto;
         this.formFecha = personaDto.fecha;
         this.formIdDepartamento = personaDto.idDepartamento;
+        this.formErrors = {};
     }
 
-    // Resetear formulario
+    // Resetear formulario (para modo crear)
     resetForm(): void {
         this.formId = 0;
         this.formNombre = "";
@@ -122,7 +179,6 @@ export default class PersonasVM {
         this.formFecha = "";
         this.formIdDepartamento = 0;
         this.formErrors = {};
-        this.personaWithDepa = null;
     }
 
     // Setters para los campos del formulario
@@ -160,7 +216,6 @@ export default class PersonasVM {
         if (this.formErrors.departamento) delete this.formErrors.departamento;
     }
 
-    // ==================== VALIDACIONES ====================
 
     // Validar formulario
     validateForm(): boolean {
@@ -208,7 +263,6 @@ export default class PersonasVM {
         return this._personasUseCase.checkFechaTo18(this.formFecha);
     }
 
-    // ==================== GUARDAR ====================
 
     // Guardar persona (crear o editar)
     async savePersona(): Promise<boolean> {
@@ -237,7 +291,6 @@ export default class PersonasVM {
                 this.isLoading = false;
             });
 
-            // Recargar la lista
             await this.loadPersonas();
             return true;
         } catch (error) {
@@ -250,7 +303,6 @@ export default class PersonasVM {
         }
     }
 
-    // ==================== ELIMINAR ====================
 
     // Eliminar persona
     async deletePersona(id: number): Promise<boolean> {
@@ -264,7 +316,6 @@ export default class PersonasVM {
                 this.isLoading = false;
             });
 
-            // Recargar la lista
             await this.loadPersonas();
             return true;
         } catch (error) {
@@ -277,7 +328,6 @@ export default class PersonasVM {
         }
     }
 
-    // ==================== UTILIDADES ====================
 
     // Obtener lista de departamentos disponibles
     get departamentosDisponibles(): Departamento[] {

@@ -9,6 +9,8 @@ export default class DepartamentosVM {
 
     // Observables
     departamentos: Departamento[] = [];
+    departamentosFiltrados: Departamento[] = [];
+    searchQuery: string = "";
     isLoading: boolean = false;
     error: string | null = null;
     
@@ -22,6 +24,7 @@ export default class DepartamentosVM {
         makeAutoObservable(this);
     }
 
+
     // Cargar todos los departamentos
     async loadDepartamentos(): Promise<void> {
         this.isLoading = true;
@@ -32,6 +35,7 @@ export default class DepartamentosVM {
             
             runInAction(() => {
                 this.departamentos = result;
+                this.filterDepartamentos();
                 this.isLoading = false;
             });
         } catch (error) {
@@ -42,6 +46,32 @@ export default class DepartamentosVM {
             console.error("Error loading departamentos:", error);
         }
     }
+
+
+    // Establecer consulta de búsqueda
+    setSearchQuery(query: string): void {
+        this.searchQuery = query;
+        this.filterDepartamentos();
+    }
+
+    // Filtrar departamentos según la búsqueda
+    private filterDepartamentos(): void {
+        if (!this.searchQuery.trim()) {
+            this.departamentosFiltrados = this.departamentos;
+        } else {
+            const queryLower = this.searchQuery.toLowerCase().trim();
+            this.departamentosFiltrados = this.departamentos.filter((departamento) =>
+                departamento.nombre.toLowerCase().includes(queryLower)
+            );
+        }
+    }
+
+    // Limpiar búsqueda
+    clearSearch(): void {
+        this.searchQuery = "";
+        this.filterDepartamentos();
+    }
+
 
     // Abrir modal para crear nuevo departamento
     openCreateModal(): void {
@@ -69,6 +99,7 @@ export default class DepartamentosVM {
         this.editNombre = nombre;
     }
 
+
     // Guardar departamento (crear o editar)
     async saveDepartamento(): Promise<boolean> {
         if (!this.editNombre.trim()) {
@@ -92,7 +123,6 @@ export default class DepartamentosVM {
                 this.closeModal();
             });
 
-            // Recargar la lista
             await this.loadDepartamentos();
             return true;
         } catch (error) {
@@ -105,30 +135,6 @@ export default class DepartamentosVM {
         }
     }
 
-    // Eliminar departamento
-    async deleteDepartamento(id: number): Promise<boolean> {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            await this._departamentosUseCase.deleteDepartamento(id);
-
-            runInAction(() => {
-                this.isLoading = false;
-            });
-
-            // Recargar la lista
-            await this.loadDepartamentos();
-            return true;
-        } catch (error) {
-            runInAction(() => {
-                this.error = error instanceof Error ? error.message : "Error al eliminar departamento";
-                this.isLoading = false;
-            });
-            console.error("Error deleting departamento:", error);
-            return false;
-        }
-    }
 
     // Limpiar errores
     clearError(): void {

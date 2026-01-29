@@ -1,13 +1,12 @@
 import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import container from '../../core/Container';
 import DepartamentoCard from '../../ui/components/DepartamentoCard';
@@ -21,21 +20,6 @@ const DepartamentosListScreen = observer(() => {
   useEffect(() => {
     viewModel.loadDepartamentos();
   }, []);
-
-  const handleDelete = (id: number, nombre: string) => {
-    Alert.alert(
-      'Confirmar eliminación',
-      `¿Estás seguro de que deseas eliminar el departamento "${nombre}"?`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: () => viewModel.deleteDepartamento(id),
-        },
-      ]
-    );
-  };
 
   if (viewModel.isLoading && viewModel.departamentos.length === 0) {
     return (
